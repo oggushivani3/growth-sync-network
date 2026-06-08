@@ -14,6 +14,103 @@ export type Database = {
   }
   public: {
     Tables: {
+      circle_checkins: {
+        Row: {
+          checkin_date: string
+          circle_id: string
+          created_at: string
+          id: string
+          note: string | null
+          user_id: string
+        }
+        Insert: {
+          checkin_date?: string
+          circle_id: string
+          created_at?: string
+          id?: string
+          note?: string | null
+          user_id: string
+        }
+        Update: {
+          checkin_date?: string
+          circle_id?: string
+          created_at?: string
+          id?: string
+          note?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "circle_checkins_circle_id_fkey"
+            columns: ["circle_id"]
+            isOneToOne: false
+            referencedRelation: "circles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      circle_members: {
+        Row: {
+          circle_id: string
+          current_streak: number
+          joined_at: string
+          last_checkin_date: string | null
+          user_id: string
+        }
+        Insert: {
+          circle_id: string
+          current_streak?: number
+          joined_at?: string
+          last_checkin_date?: string | null
+          user_id: string
+        }
+        Update: {
+          circle_id?: string
+          current_streak?: number
+          joined_at?: string
+          last_checkin_date?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "circle_members_circle_id_fkey"
+            columns: ["circle_id"]
+            isOneToOne: false
+            referencedRelation: "circles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      circles: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          interest_tag: string
+          name: string
+          owner_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          interest_tag: string
+          name: string
+          owner_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          interest_tag?: string
+          name?: string
+          owner_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null

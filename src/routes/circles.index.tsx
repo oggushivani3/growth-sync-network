@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { INTERESTS } from "@/lib/interests";
 
-export const Route = createFileRoute("/circles")({
+export const Route = createFileRoute("/circles/")({
   head: () => ({ meta: [{ title: "Circles — MindSync" }] }),
   component: CirclesPage,
 });

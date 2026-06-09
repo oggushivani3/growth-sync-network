@@ -66,19 +66,36 @@ function CircleDetailPage() {
       supabase.from("circles").select("*").eq("id", id).maybeSingle(),
       supabase
         .from("circle_members")
-        .select("user_id, current_streak, last_checkin_date, profile:profiles(display_name, username)")
+        .select("user_id, current_streak, last_checkin_date")
         .eq("circle_id", id),
       supabase
         .from("circle_checkins")
-        .select("id, user_id, note, checkin_date, created_at, study_hours, snap_url, profile:profiles(display_name, username)")
+        .select("id, user_id, note, checkin_date, created_at, study_hours, snap_url")
         .eq("circle_id", id)
         .order("created_at", { ascending: false })
         .limit(30),
     ]);
     setCircle((c.data as Circle | null) ?? null);
-    setMembers((m.data as unknown as Member[]) ?? []);
-    const cks = (k.data as unknown as Checkin[]) ?? [];
+
+    const memberRows = (m.data as Array<{ user_id: string; current_streak: number; last_checkin_date: string | null }>) ?? [];
+    const checkinRows = (k.data as Array<Omit<Checkin, "profile">>) ?? [];
+
+    const userIds = Array.from(new Set([...memberRows.map((x) => x.user_id), ...checkinRows.map((x) => x.user_id)]));
+    const profileMap: Record<string, { display_name: string | null; username: string | null }> = {};
+    if (userIds.length > 0) {
+      const { data: profs } = await supabase
+        .from("profiles")
+        .select("id, display_name, username")
+        .in("id", userIds);
+      (profs ?? []).forEach((p) => {
+        profileMap[p.id] = { display_name: p.display_name, username: p.username };
+      });
+    }
+
+    setMembers(memberRows.map((x) => ({ ...x, profile: profileMap[x.user_id] ?? null })));
+    const cks: Checkin[] = checkinRows.map((x) => ({ ...x, profile: profileMap[x.user_id] ?? null }));
     setCheckins(cks);
+
 
     // Generate signed URLs for snaps (bucket is private)
     const paths = cks.map((x) => x.snap_url).filter((x): x is string => !!x);

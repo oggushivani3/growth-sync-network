@@ -14,8 +14,8 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DiscoverRouteImport } from './routes/discover'
-import { Route as CirclesRouteImport } from './routes/circles'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CirclesIndexRouteImport } from './routes/circles.index'
 import { Route as CirclesIdRouteImport } from './routes/circles.$id'
 
 const SignupRoute = SignupRouteImport.update({
@@ -43,94 +43,95 @@ const DiscoverRoute = DiscoverRouteImport.update({
   path: '/discover',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CirclesRoute = CirclesRouteImport.update({
-  id: '/circles',
-  path: '/circles',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CirclesIndexRoute = CirclesIndexRouteImport.update({
+  id: '/circles/',
+  path: '/circles/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CirclesIdRoute = CirclesIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => CirclesRoute,
+  id: '/circles/$id',
+  path: '/circles/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/circles': typeof CirclesRouteWithChildren
   '/discover': typeof DiscoverRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
   '/signup': typeof SignupRoute
   '/circles/$id': typeof CirclesIdRoute
+  '/circles/': typeof CirclesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/circles': typeof CirclesRouteWithChildren
   '/discover': typeof DiscoverRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
   '/signup': typeof SignupRoute
   '/circles/$id': typeof CirclesIdRoute
+  '/circles': typeof CirclesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/circles': typeof CirclesRouteWithChildren
   '/discover': typeof DiscoverRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
   '/signup': typeof SignupRoute
   '/circles/$id': typeof CirclesIdRoute
+  '/circles/': typeof CirclesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/circles'
     | '/discover'
     | '/login'
     | '/onboarding'
     | '/profile'
     | '/signup'
     | '/circles/$id'
+    | '/circles/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/circles'
     | '/discover'
     | '/login'
     | '/onboarding'
     | '/profile'
     | '/signup'
     | '/circles/$id'
+    | '/circles'
   id:
     | '__root__'
     | '/'
-    | '/circles'
     | '/discover'
     | '/login'
     | '/onboarding'
     | '/profile'
     | '/signup'
     | '/circles/$id'
+    | '/circles/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CirclesRoute: typeof CirclesRouteWithChildren
   DiscoverRoute: typeof DiscoverRoute
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRoute
   ProfileRoute: typeof ProfileRoute
   SignupRoute: typeof SignupRoute
+  CirclesIdRoute: typeof CirclesIdRoute
+  CirclesIndexRoute: typeof CirclesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -170,13 +171,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiscoverRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/circles': {
-      id: '/circles'
-      path: '/circles'
-      fullPath: '/circles'
-      preLoaderRoute: typeof CirclesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -184,36 +178,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/circles/': {
+      id: '/circles/'
+      path: '/circles'
+      fullPath: '/circles/'
+      preLoaderRoute: typeof CirclesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/circles/$id': {
       id: '/circles/$id'
-      path: '/$id'
+      path: '/circles/$id'
       fullPath: '/circles/$id'
       preLoaderRoute: typeof CirclesIdRouteImport
-      parentRoute: typeof CirclesRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface CirclesRouteChildren {
-  CirclesIdRoute: typeof CirclesIdRoute
-}
-
-const CirclesRouteChildren: CirclesRouteChildren = {
-  CirclesIdRoute: CirclesIdRoute,
-}
-
-const CirclesRouteWithChildren =
-  CirclesRoute._addFileChildren(CirclesRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CirclesRoute: CirclesRouteWithChildren,
   DiscoverRoute: DiscoverRoute,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRoute,
   ProfileRoute: ProfileRoute,
   SignupRoute: SignupRoute,
+  CirclesIdRoute: CirclesIdRoute,
+  CirclesIndexRoute: CirclesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

@@ -1,5 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { SiteNav } from "@/components/site-nav";
+import { useAuth } from "@/hooks/use-auth";
 import heroGlow from "@/assets/hero-glow.jpg";
 
 export const Route = createFileRoute("/")({
@@ -26,6 +28,24 @@ const streaks = [
 ];
 
 function Landing() {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate({ to: "/circles" });
+    }
+  }, [user, loading, navigate]);
+
+  if (loading || user) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
+        <span className="w-10 h-10 border-4 border-white/20 border-t-brand animate-spin rounded-full" />
+        <p className="text-white/40 text-sm font-semibold tracking-wider uppercase">Loading...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-brand selection:text-black">
       <SiteNav />

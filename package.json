@@ -9,6 +9,10 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "format": "prettier --write .",
+<<<<<<< HEAD
+=======
+    "postinstall": "npm install --legacy-peer-deps"
+>>>>>>> 68fe4e72734842914008f2fcb04bde387ed4c9ad
   },
   "dependencies": {
     "@fontsource/bricolage-grotesque": "^5.2.10",
@@ -69,7 +73,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
-    "@lovable.dev/vite-tanstack-config": "^2.1.1",
     "@types/node": "^22.16.5",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",

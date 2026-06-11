@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "postinstall": "npm install --legacy-peer-deps",
+    "postinstall": "npm install --legacy-peer-deps"
   },
   "dependencies": {
     "@fontsource/bricolage-grotesque": "^5.2.10",

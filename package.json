@@ -8,11 +8,7 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
-    "format": "prettier --write .",
-<<<<<<< HEAD
-=======
-    "postinstall": "npm install --legacy-peer-deps"
->>>>>>> 68fe4e72734842914008f2fcb04bde387ed4c9ad
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@fontsource/bricolage-grotesque": "^5.2.10",
